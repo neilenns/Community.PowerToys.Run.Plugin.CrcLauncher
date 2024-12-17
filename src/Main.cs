@@ -27,12 +27,12 @@ namespace Community.PowerToys.Run.Plugin.CrcLauncher
         /// <summary>
         /// Gets the name of the plugin.
         /// </summary>
-        public string Name => "Community.PowerToys.Run.Plugin.CrcLauncher";
+        public string Name => "CRC launcher";
 
         /// <summary>
         /// Gets the description of the plugin.
         /// </summary>
-        public string Description => "Community.PowerToys.Run.Plugin.CrcLauncher Description";
+        public string Description => "Launches CRC with the selected profile.";
 
         private PluginInitContext Context { get; set; }
 
