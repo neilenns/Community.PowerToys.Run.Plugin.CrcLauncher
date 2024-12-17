@@ -19,6 +19,8 @@ namespace Community.PowerToys.Run.Plugin.CrcLauncher
     {
         private static readonly List<CrcProfile> Profiles = [];
 
+        private static readonly string CrcProfilePath = ProfileManager.GetCrcProfilePath();
+
         /// <summary>
         /// Gets the list of profiles.
         /// </summary>
@@ -48,16 +50,15 @@ namespace Community.PowerToys.Run.Plugin.CrcLauncher
         /// </summary>
         public static void LoadProfiles()
         {
-            var folderPath = ProfileManager.GetCrcProfilePath();
             Profiles.Clear();
 
-            if (string.IsNullOrEmpty(folderPath) || !Directory.Exists(folderPath))
+            if (string.IsNullOrEmpty(ProfileManager.CrcProfilePath) || !Directory.Exists(ProfileManager.CrcProfilePath))
             {
                 Log.Error("Profile folder not found.", typeof(ProfileManager));
                 return;
             }
 
-            var jsonFiles = Directory.GetFiles(folderPath, "*.json");
+            var jsonFiles = Directory.GetFiles(ProfileManager.CrcProfilePath, "*.json");
 
             foreach (var file in jsonFiles)
             {
