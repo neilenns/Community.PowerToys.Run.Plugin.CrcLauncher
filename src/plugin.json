@@ -1,0 +1,14 @@
+{
+  "ID": "1B6E001733344844B6A60C576587F27B",
+  "ActionKeyword": "crc",
+  "IsGlobal": false,
+  "Name": "Community.PowerToys.Run.Plugin.CrcLauncher",
+  "Author": "Neil Enns",
+  "Version": "0.86.0",
+  "Language": "csharp",
+  "Website": "https://github.com/neilenns/Community.PowerToys.Run.Plugin.CrcLauncher",
+  "ExecuteFileName": "Community.PowerToys.Run.Plugin.CrcLauncher.dll",
+  "IcoPathDark": "Images\\community.powertoys.run.plugin.crclauncher.dark.png",
+  "IcoPathLight": "Images\\community.powertoys.run.plugin.crclauncher.light.png",
+  "DynamicLoading": false
+}

@@ -1,0 +1,59 @@
+name: Release application
+
+on:
+  release:
+    types: [created]
+
+env:
+  ZipPrefix: CrcLauncher
+  ProjectName: Community.PowerToys.Run.Plugin.CrcLauncher
+
+jobs:
+  build:
+    name: "Release build"
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        architecture: [x64, arm64]
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: "9.0.x"
+
+      - name: Get the release version
+        id: get_version
+        uses: battila7/get-version-action@v2
+
+      - name: Set version in plugin.json
+        uses: tnikFi/json-file-transform@v1
+        with:
+          files: "src/plugin.json"
+          key-value-pairs: |
+            Version=${{ steps.get_version.outputs.version-without-v }}
+
+      - name: Build the application for ${{ matrix.architecture }}
+        run: |
+          dotnet publish .\src\${{ env.ProjectName }}.csproj -c Release /p:PublishProfile=${{ matrix.architecture }}
+
+      # Get rid of the PowerToys support DLLs. They are only there for development purposes
+      # and shouldn't be included in the final archive. Then zip the remaining files for the release.
+      - name: Zip the build output
+        run: |
+          Remove-Item ./src/bin/${{ matrix.architecture }}/Release/net8.0-windows/${{ env.ProjectName }}/PowerToys.*
+          Remove-Item ./src/bin/${{ matrix.architecture }}/Release/net8.0-windows/${{ env.ProjectName }}/Wox.*
+          Remove-Item ./src/bin/${{ matrix.architecture }}/Release/net8.0-windows/${{ env.ProjectName }}/*.xml
+          Compress-Archive -Path ./src/bin/${{ matrix.architecture }}/Release/net8.0-windows/${{ env.ProjectName }} -DestinationPath ./${{ env.ZipPrefix}}-${{ steps.get_version.outputs.version-without-v}}-${{ matrix.architecture }}.zip
+
+      - name: Upload release assets
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            ./${{ env.ZipPrefix}}-${{ steps.get_version.outputs.version-without-v}}-${{ matrix.architecture }}.zip
+
+      - name: Upload checksums
+        uses: wangzuo/action-release-checksums@v1

@@ -1,0 +1,9 @@
+{
+  "files.exclude": {
+    ".vs": true,
+    "**/*.tmp": true,
+    "**/*.user": true,
+    "**/bin": true,
+    "**/obj": true
+  }
+}
