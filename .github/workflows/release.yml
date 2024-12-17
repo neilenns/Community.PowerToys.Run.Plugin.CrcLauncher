@@ -46,7 +46,7 @@ jobs:
       # and shouldn't be included in the final archive. Then zip the remaining files for the release.
       - name: Zip the build output
         run: |
-          Remove-Item -Recurse ./src/bin/${{ matrix.architecture }}/Release/${{ env.FrameworkVersion }}/DiscordTimestamp/runtimes
+          Remove-Item -Recurse ./src/bin/${{ matrix.architecture }}/Release/${{ env.FrameworkVersion }}/${{ env.BuildFolderName }}/runtimes
           Remove-Item ./src/bin/${{ matrix.architecture }}/Release/${{ env.FrameworkVersion }}/${{ env.BuildFolderName }}/PowerToys.*
           Remove-Item ./src/bin/${{ matrix.architecture }}/Release/${{ env.FrameworkVersion }}/${{ env.BuildFolderName }}/Wox.*
           Remove-Item ./src/bin/${{ matrix.architecture }}/Release/${{ env.FrameworkVersion }}/${{ env.BuildFolderName }}/*.xml

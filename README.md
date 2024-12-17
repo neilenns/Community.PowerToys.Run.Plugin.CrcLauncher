@@ -17,7 +17,7 @@ The easiest way to install is with [ptr](https://github.com/8LWXpg/ptr):
 ptr add CrcLauncher neilenns/Community.PowerToys.Run.Plugin.CrcLauncher
 ```
 
-Alternatively download and extract the plugin from the [releases pages](https://github.com/neilenns/Community.PowerToys.Run.Plugin.CrcLauncher/releases/latest) then extract the zip into your `%localappdata%\Microsoft\PowerToys\PowerToys Run\Plugins` folder. If you are installing manually make sure to restart PowerToys after adding the plugin to the folder.
+Alternatively download the plugin from the [releases pages](https://github.com/neilenns/Community.PowerToys.Run.Plugin.CrcLauncher/releases/latest) then extract the zip into your `%localappdata%\Microsoft\PowerToys\PowerToys Run\Plugins` folder. If you are installing manually make sure to restart PowerToys after adding the plugin to the folder.
 
 ## Development notes
 
