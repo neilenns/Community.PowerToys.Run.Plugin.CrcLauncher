@@ -2,7 +2,7 @@
   "ID": "1B6E001733344844B6A60C576587F27B",
   "ActionKeyword": "crc",
   "IsGlobal": false,
-  "Name": "Community.PowerToys.Run.Plugin.CrcLauncher",
+  "Name": "CRC launcher",
   "Author": "Neil Enns",
   "Version": "0.86.0",
   "Language": "csharp",
