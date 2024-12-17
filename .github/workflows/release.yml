@@ -6,6 +6,7 @@ on:
 
 env:
   ZipPrefix: CrcLauncher
+  BuildFolderName: CrcLauncher
   ProjectName: Community.PowerToys.Run.Plugin.CrcLauncher
   FrameworkVersion: net8.0-windows10.0.22621.0
 
@@ -45,10 +46,10 @@ jobs:
       # and shouldn't be included in the final archive. Then zip the remaining files for the release.
       - name: Zip the build output
         run: |
-          Remove-Item ./src/bin/${{ matrix.architecture }}/Release/${{ env.FrameworkVersion }}/${{ env.ProjectName }}/PowerToys.*
-          Remove-Item ./src/bin/${{ matrix.architecture }}/Release/${{ env.FrameworkVersion }}/${{ env.ProjectName }}/Wox.*
-          Remove-Item ./src/bin/${{ matrix.architecture }}/Release/${{ env.FrameworkVersion }}/${{ env.ProjectName }}/*.xml
-          Compress-Archive -Path ./src/bin/${{ matrix.architecture }}/Release/${{ env.FrameworkVersion }}/${{ env.ProjectName }} -DestinationPath ./${{ env.ZipPrefix}}-${{ steps.get_version.outputs.version-without-v}}-${{ matrix.architecture }}.zip
+          Remove-Item ./src/bin/${{ matrix.architecture }}/Release/${{ env.FrameworkVersion }}/${{ env.BuildFolderName }}/PowerToys.*
+          Remove-Item ./src/bin/${{ matrix.architecture }}/Release/${{ env.FrameworkVersion }}/${{ env.BuildFolderName }}/Wox.*
+          Remove-Item ./src/bin/${{ matrix.architecture }}/Release/${{ env.FrameworkVersion }}/${{ env.BuildFolderName }}/*.xml
+          Compress-Archive -Path ./src/bin/${{ matrix.architecture }}/Release/${{ env.FrameworkVersion }}/${{ env.BuildFolderName }} -DestinationPath ./${{ env.ZipPrefix}}-${{ steps.get_version.outputs.version-without-v}}-${{ matrix.architecture }}.zip
 
       - name: Upload release assets
         uses: softprops/action-gh-release@v1
