@@ -33,6 +33,9 @@ namespace Community.PowerToys.Run.Plugin.CrcLauncher
         {
             if (string.IsNullOrWhiteSpace(query) || CrcProfiles.Count == 0)
             {
+                // Issue #19: This ensures the profiles get reloaded every time a new query
+                // is started, so new profiles get picked up.
+                ProfileManager.LoadProfiles();
                 return CrcProfiles;
             }
 

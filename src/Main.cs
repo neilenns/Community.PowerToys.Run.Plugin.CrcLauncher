@@ -74,7 +74,6 @@ namespace Community.PowerToys.Run.Plugin.CrcLauncher
             this.Context = context ?? throw new ArgumentNullException(nameof(context));
             this.Context.API.ThemeChanged += this.OnThemeChanged;
             this.UpdateIconPath(this.Context.API.GetCurrentTheme());
-            ProfileManager.LoadProfiles();
         }
 
         /// <summary>
