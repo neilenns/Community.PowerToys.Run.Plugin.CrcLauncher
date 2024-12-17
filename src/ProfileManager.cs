@@ -2,7 +2,6 @@
 // Copyright (c) Neil Enns. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
-
 namespace Community.PowerToys.Run.Plugin.CrcLauncher
 {
     using System;
@@ -10,8 +9,8 @@ namespace Community.PowerToys.Run.Plugin.CrcLauncher
     using System.IO;
     using System.Linq;
     using System.Text.Json;
+    using Microsoft.Win32;
     using Wox.Plugin.Logger;
-    using static System.Runtime.InteropServices.JavaScript.JSType;
 
     /// <summary>
     /// Maintains a list of CRC profiles.
@@ -32,7 +31,7 @@ namespace Community.PowerToys.Run.Plugin.CrcLauncher
         /// <returns>The list of matching profiles. If query is null or empty all profiles are returned. If no profiles match an empty list is returned.</returns>
         public static IEnumerable<CrcProfile> GetMatchingProfiles(string query)
         {
-            if (string.IsNullOrWhiteSpace(query))
+            if (string.IsNullOrWhiteSpace(query) || CrcProfiles.Count == 0)
             {
                 return CrcProfiles;
             }
@@ -46,10 +45,10 @@ namespace Community.PowerToys.Run.Plugin.CrcLauncher
         /// </summary>
         public static void LoadProfiles()
         {
-            var folderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "CRC", "Profiles");
+            var folderPath = ProfileManager.GetCrcProfilePath();
             Profiles.Clear();
 
-            if (!Directory.Exists(folderPath))
+            if (string.IsNullOrEmpty(folderPath) || !Directory.Exists(folderPath))
             {
                 Log.Error("Profile folder not found.", typeof(ProfileManager));
                 return;
@@ -81,6 +80,42 @@ namespace Community.PowerToys.Run.Plugin.CrcLauncher
             }
 
             Log.Info($"Loaded {Profiles.Count} profiles.", typeof(ProfileManager));
+        }
+
+        /// <summary>
+        /// Looks up the path to the CRC profiles from the registry.
+        /// </summary>
+        /// <returns>The path to the profiles, or the empty string if not found.</returns>
+        private static string GetCrcProfilePath()
+        {
+            try
+            {
+                using RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\CRC");
+                if (key != null)
+                {
+                    object value = key.GetValue("Install_Dir");
+                    if (value != null)
+                    {
+                        string profileDir = Path.Combine(value.ToString(), "Profiles");
+                        Log.Info($"CRC install directory: {profileDir}", typeof(ProfileManager));
+                        return profileDir;
+                    }
+                    else
+                    {
+                        Log.Error("Unable to find CRC install directory.", typeof(ProfileManager));
+                    }
+                }
+                else
+                {
+                    Log.Error("Unable to find CRC install directory.", typeof(ProfileManager));
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error reading CRC install path from registry: {ex.Message}");
+            }
+
+            return string.Empty;
         }
     }
 }
