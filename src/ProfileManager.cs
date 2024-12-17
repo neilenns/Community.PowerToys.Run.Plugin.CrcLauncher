@@ -3,7 +3,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
 
-namespace Community.PowerToys.Run.Plugin.Community.PowerToys.Run.Plugin.CrcLauncher
+namespace Community.PowerToys.Run.Plugin.CrcLauncher
 {
     using System;
     using System.Collections.Generic;
