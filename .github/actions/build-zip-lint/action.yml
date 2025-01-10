@@ -41,11 +41,12 @@ runs:
       shell: pwsh
       run: |
         $zipPath = "./${{ env.ZipPrefix }}-${{ inputs.version }}-${{ inputs.architecture }}.zip"
-        Remove-Item -Recurse ./src/bin/${{ matrix.architecture }}/Release/${{ env.FrameworkVersion }}/${{ env.BuildFolderName }}/runtimes
-        Remove-Item ./src/bin/${{ matrix.architecture }}/Release/${{ env.FrameworkVersion }}/${{ env.BuildFolderName }}/PowerToys.*
-        Remove-Item ./src/bin/${{ matrix.architecture }}/Release/${{ env.FrameworkVersion }}/${{ env.BuildFolderName }}/Wox.*
-        Remove-Item ./src/bin/${{ matrix.architecture }}/Release/${{ env.FrameworkVersion }}/${{ env.BuildFolderName }}/*.xml
-        Remove-Item ./src/bin/${{ matrix.architecture }}/Release/${{ env.FrameworkVersion }}/${{ env.BuildFolderName }}/Microsoft.Windows.SDK.NET.dll        Compress-Archive -Path ./src/bin/${{ inputs.architecture }}/Release/net8.0-windows10.0.22621.0/CrcLauncher -DestinationPath $zipPath
+        Remove-Item -Recurse "./src/bin/${{ matrix.architecture }}/Release/${{ env.FrameworkVersion }}/${{ env.BuildFolderName }}/runtimes"
+        Remove-Item "./src/bin/${{ matrix.architecture }}/Release/${{ env.FrameworkVersion }}/${{ env.BuildFolderName }}/PowerToys.*"
+        Remove-Item "./src/bin/${{ matrix.architecture }}/Release/${{ env.FrameworkVersion }}/${{ env.BuildFolderName }}/Wox.*"
+        Remove-Item "./src/bin/${{ matrix.architecture }}/Release/${{ env.FrameworkVersion }}/${{ env.BuildFolderName }}/*.xml"
+        Remove-Item "./src/bin/${{ matrix.architecture }}/Release/${{ env.FrameworkVersion }}/${{ env.BuildFolderName }}/Microsoft.Windows.SDK.NET.dll"   
+        Compress-Archive -Path "./src/bin/${{ inputs.architecture }}/Release/net8.0-windows10.0.22621.0/CrcLauncher" -DestinationPath $zipPath
         echo "zipFile=$zipPath" >> $env:GITHUB_OUTPUT
 
     - name: Lint
