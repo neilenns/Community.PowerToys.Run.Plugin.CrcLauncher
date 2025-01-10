@@ -1,0 +1,55 @@
+name: "Build and Zip Application"
+description: "Builds the application, zips the output, and runs a linter."
+inputs:
+  version:
+    description: "Version of the application"
+    required: true
+  architecture:
+    description: "Architecture to build for"
+    required: true
+outputs:
+  zipFile:
+    description: "The path to the zip file"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Set up .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: "9.0.x"
+
+    - name: Install linter
+      run: |
+        dotnet tool install -g Community.PowerToys.Run.Plugin.Lint
+
+    - name: Set version in plugin.json
+      uses: tnikFi/json-file-transform@v1
+      with:
+        files: "src/plugin.json"
+        key-value-pairs: |
+          Version=${{ inputs.version }}
+
+    - name: Build the application for ${{ inputs.architecture }}
+      run: |
+        dotnet publish .\src\Community.PowerToys.Run.Plugin.CrcLauncher.csproj -c Release /p:PublishProfile=${{ inputs.architecture }}
+
+    - name: Clean and Zip the build output
+      id: zip-output
+      shell: pwsh
+      run: |
+        $zipPath = "./CrcLauncher-${{ inputs.version }}-${{ inputs.architecture }}.zip"
+        Remove-Item -Recurse ./src/bin/${{ inputs.architecture }}/Release/net8.0-windows10.0.22621.0/CrcLauncher/runtimes
+        Remove-Item ./src/bin/${{ inputs.architecture }}/Release/net8.0-windows10.0.22621.0/CrcLauncher/PowerToys.*
+        Remove-Item ./src/bin/${{ inputs.architecture }}/Release/net8.0-windows10.0.22621.0/CrcLauncher/Wox.*
+        Remove-Item ./src/bin/${{ inputs.architecture }}/Release/net8.0-windows10.0.22621.0/CrcLauncher/*.xml
+        Remove-Item ./src/bin/${{ inputs.architecture }}/Release/net8.0-windows10.0.22621.0/CrcLauncher/Microsoft.Windows.SDK.NET.dll
+        Compress-Archive -Path ./src/bin/${{ inputs.architecture }}/Release/net8.0-windows10.0.22621.0/CrcLauncher -DestinationPath $zipPath
+        echo "zipFile=$zipPath" >> $env:GITHUB_OUTPUT
+
+    - name: Lint
+      run: |
+        ptr-lint ${{ steps.zip-output.outputs.zipFile }}

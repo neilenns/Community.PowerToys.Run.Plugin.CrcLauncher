@@ -10,24 +10,19 @@ on:
 env:
   Version: "0.0.${{ github.event.number }}.${{ github.run_number }}"
 
-# This method of passing environment varaibles to a reusable workflow comes from
-# https://github.com/orgs/community/discussions/26671
 jobs:
-  setup:
-    runs-on: windows-latest
-    outputs:
-      Version: ${{ env.Version }}
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
   build:
-    needs: [setup]
-    uses: ./.github/workflows/build-zip-lint.yml
-    name: "CI build"
+    runs-on: windows-latest
     strategy:
       matrix:
         architecture: [x64, arm64]
-    with:
-      version: ${{ needs.setup.outputs.Version }}
-      architecture: ${{ matrix.architecture }}
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Build, zip, and lint
+        uses: ./github/actions/build-zip-lint
+        with:
+          version: ${{ env.Version }}
+          architecture: ${{ matrix.architecture }}
