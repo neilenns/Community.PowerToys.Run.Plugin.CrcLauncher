@@ -12,6 +12,9 @@ jobs:
         architecture: [x64, arm64]
 
     steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
       - name: Get the release version
         id: get_version
         uses: dhkatz/get-version-action@v3.0.0

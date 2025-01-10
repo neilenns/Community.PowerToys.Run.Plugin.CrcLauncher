@@ -16,6 +16,9 @@ jobs:
         architecture: [x64, arm64]
 
     steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
       - name: Build, zip, and lint
         uses: ./.github/actions/build-zip-lint
         with:
