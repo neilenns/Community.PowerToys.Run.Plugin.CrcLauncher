@@ -46,7 +46,7 @@ runs:
         Remove-Item "./src/bin/${{ inputs.architecture }}/Release/${{ env.FrameworkVersion }}/${{ env.BuildFolderName }}/Wox.*"
         Remove-Item "./src/bin/${{ inputs.architecture }}/Release/${{ env.FrameworkVersion }}/${{ env.BuildFolderName }}/*.xml"
         Remove-Item "./src/bin/${{ inputs.architecture }}/Release/${{ env.FrameworkVersion }}/${{ env.BuildFolderName }}/Microsoft.Windows.SDK.NET.dll"   
-        Compress-Archive -Path "./src/bin/${{ inputs.architecture }}/Release/${{ env.FrameworkVersion }}/CrcLauncher" -DestinationPath "$zipPath"
+        Compress-Archive -Path "./src/bin/${{ inputs.architecture }}/Release/${{ env.FrameworkVersion }}/${{ env.BuildFolderName }}" -DestinationPath "$zipPath"
         echo "zipFile=$zipPath" >> $env:GITHUB_OUTPUT
 
     - name: Lint
