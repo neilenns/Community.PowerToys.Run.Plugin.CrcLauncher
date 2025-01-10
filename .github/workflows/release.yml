@@ -18,7 +18,7 @@ jobs:
 
       - name: Build, zip, and lint
         id: build-zip-lint
-        uses: .\.github\actions\build-zip-lint
+        uses: ./.github/actions/build-zip-lint
         with:
           version: ${{ steps.get_version.outputs.version-without-v }}
           architecture: ${{ matrix.architecture }}
