@@ -13,7 +13,6 @@ outputs:
 
 runs:
   using: "composite"
-  shell: pwsh
   steps:
     - name: Set up .NET
       uses: actions/setup-dotnet@v4
@@ -21,6 +20,7 @@ runs:
         dotnet-version: "9.0.x"
 
     - name: Install linter
+      shell: pwsh
       run: |
         dotnet tool install -g Community.PowerToys.Run.Plugin.Lint
 
@@ -32,11 +32,13 @@ runs:
           Version=${{ inputs.version }}
 
     - name: Build the application for ${{ inputs.architecture }}
+      shell: pwsh
       run: |
         dotnet publish .\src\Community.PowerToys.Run.Plugin.CrcLauncher.csproj -c Release /p:PublishProfile=${{ inputs.architecture }}
 
     - name: Clean and Zip the build output
       id: zip-output
+      shell: pwsh
       run: |
         $zipPath = "./CrcLauncher-${{ inputs.version }}-${{ inputs.architecture }}.zip"
         Remove-Item -Recurse ./src/bin/${{ inputs.architecture }}/Release/net8.0-windows10.0.22621.0/CrcLauncher/runtimes
@@ -48,5 +50,6 @@ runs:
         echo "zipFile=$zipPath" >> $env:GITHUB_OUTPUT
 
     - name: Lint
+      shell: pwsh
       run: |
         ptr-lint ${{ steps.zip-output.outputs.zipFile }}
