@@ -12,20 +12,32 @@ on:
       zipPrefix:
         required: true
         type: string
+    outputs:
+      zipFile:
+        description: "The path to the zip file"
+        value: ${{ jobs.build.outputs.zipFile }}
 
 env:
   ProjectName: Community.PowerToys.Run.Plugin.CrcLauncher
   BuildFolderName: CrcLauncher
   FrameworkVersion: net8.0-windows10.0.22621.0
+  ZipPrefix: CrcLauncher
 
 jobs:
   build:
     runs-on: windows-latest
+    outputs:
+      zipFile: ${{ steps.zip-output.outputs.zipFile }}
+
     steps:
       - name: Set up .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: "9.0.x"
+
+      - name: Install linter
+        run: |
+          dotnet tool install -g Community.PowerToys.Run.Plugin.Lint
 
       - name: Set version in plugin.json
         uses: tnikFi/json-file-transform@v1
@@ -39,10 +51,18 @@ jobs:
           dotnet publish .\src\${{ env.ProjectName }}.csproj -c Release /p:PublishProfile=${{ inputs.architecture }}
 
       - name: Clean and Zip the build output
+        id: zip-output
+        shell: pwsh
         run: |
+          $zipPath = "./${{ inputs.zipPrefix }}-${{ inputs.version }}-${{ inputs.architecture }}.zip"
           Remove-Item -Recurse ./src/bin/${{ inputs.architecture }}/Release/${{ env.FrameworkVersion }}/${{ env.BuildFolderName }}/runtimes
           Remove-Item ./src/bin/${{ inputs.architecture }}/Release/${{ env.FrameworkVersion }}/${{ env.BuildFolderName }}/PowerToys.*
           Remove-Item ./src/bin/${{ inputs.architecture }}/Release/${{ env.FrameworkVersion }}/${{ env.BuildFolderName }}/Wox.*
           Remove-Item ./src/bin/${{ inputs.architecture }}/Release/${{ env.FrameworkVersion }}/${{ env.BuildFolderName }}/*.xml
           Remove-Item ./src/bin/${{ inputs.architecture }}/Release/${{ env.FrameworkVersion }}/${{ env.BuildFolderName }}/Microsoft.Windows.SDK.NET.dll
-          Compress-Archive -Path ./src/bin/${{ inputs.architecture }}/Release/${{ env.FrameworkVersion }}/${{ env.BuildFolderName }} -DestinationPath ./${{ inputs.zipPrefix}}-${{ inputs.version }}-${{ inputs.architecture }}.zip
+          Compress-Archive -Path ./src/bin/${{ inputs.architecture }}/Release/${{ env.FrameworkVersion }}/${{ env.BuildFolderName }} -DestinationPath $zipPath
+          echo "::set-output name=zipFile::$zipPath"
+
+      - name: Lint
+        run: |
+          ptr-lint ${{ steps.zip-output.outputs.zipFile }}

@@ -4,9 +4,6 @@ on:
   release:
     types: [created]
 
-env:
-  ZipPrefix: CrcLauncher
-
 jobs:
   build:
     name: "Release build"
@@ -24,17 +21,17 @@ jobs:
         uses: dhkatz/get-version-action@v3.0.0
 
       - name: Build, zip, and lint
+        id: build-zip-lint
         uses: ./.github/workflows/build-zip-lint.yml
         with:
           version: ${{ steps.get_version.outputs.version-without-v }}
           architecture: ${{ matrix.architecture }}
-          zipPrefix: ${{ env.ZipPrefix }}
 
       - name: Upload release assets
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            ./${{ env.ZipPrefix}}-${{ steps.get_version.outputs.version-without-v}}-${{ matrix.architecture }}.zip
+            ${{ steps.build-zip-lint.outputs.zipFile }}
 
       - name: Upload checksums
         uses: wangzuo/action-release-checksums@v1
