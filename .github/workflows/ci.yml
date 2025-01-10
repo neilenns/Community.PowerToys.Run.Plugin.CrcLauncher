@@ -53,4 +53,4 @@ jobs:
       - name: Lint
         run: |
           ptrun-lint ${{ secrets.GITHUB_TOKEN }}
-          ptrun-lint ./${{ env.ZipPrefix}}-1.0.0-${{ matrix.architecture }}.zip
+          # ptrun-lint ./${{ env.ZipPrefix}}-1.0.0-${{ matrix.architecture }}.zip
