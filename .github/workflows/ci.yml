@@ -21,10 +21,10 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Build, zip, and lint
-        uses: ./build-zip-lint.yml
+        uses: ./.github/workflows/build-zip-lint.yml
         with:
           version: ${{ env.Version }}
           architecture: ${{ matrix.architecture }}
