@@ -5,9 +5,21 @@ on:
     types: [created]
 
 jobs:
+  setup:
+    runs-on: windows-latest
+    outputs:
+      Version: ${{ steps.get_version.outputs.version-without-v }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+      - name: Get the release version
+        id: get_version
+        uses: dhkatz/get-version-action@v3.0.0
+
   build:
     name: "Release build"
     runs-on: windows-latest
+    needs: [setup]
     strategy:
       matrix:
         architecture: [x64, arm64]
@@ -16,15 +28,11 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Get the release version
-        id: get_version
-        uses: dhkatz/get-version-action@v3.0.0
-
       - name: Build, zip, and lint
         id: build-zip-lint
         uses: ./.github/workflows/build-zip-lint.yml
         with:
-          version: ${{ steps.get_version.outputs.version-without-v }}
+          version: ${{ needs.setup.outputs.Version }}
           architecture: ${{ matrix.architecture }}
 
       - name: Upload release assets

@@ -11,19 +11,21 @@ env:
   Version: "0.0.${{ github.event.number }}.${{ github.run_number }}"
 
 jobs:
-  build:
-    name: "CI build"
+  setup:
     runs-on: windows-latest
-    strategy:
-      matrix:
-        architecture: [x64, arm64]
-
+    outputs:
+      Version: ${{ env.Version }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Build, zip, and lint
-        uses: ./.github/workflows/build-zip-lint.yml
-        with:
-          version: ${{ env.Version }}
-          architecture: ${{ matrix.architecture }}
+  build:
+    needs: [setup]
+    uses: ./.github/workflows/build-zip-lint.yml
+    name: "CI build"
+    strategy:
+      matrix:
+        architecture: [x64, arm64]
+    with:
+      version: ${{ needs.setup.outputs.Version }}
+      architecture: ${{ matrix.architecture }}
