@@ -52,4 +52,4 @@ runs:
     - name: Lint
       shell: pwsh
       run: |
-        ptr-lint ${{ steps.zip-output.outputs.zipFile }}
+        ptrun-lint ${{ steps.zip-output.outputs.zipFile }}
