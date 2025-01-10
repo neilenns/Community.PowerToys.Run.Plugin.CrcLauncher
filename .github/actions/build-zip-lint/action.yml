@@ -1,0 +1,55 @@
+name: "Build and Zip Application"
+description: "Builds the application, zips the output, and runs a linter."
+inputs:
+  version:
+    description: "Version of the application"
+    required: true
+  architecture:
+    description: "Architecture to build for"
+    required: true
+outputs:
+  zipFile:
+    description: "The path to the zip file"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set up .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: "9.0.x"
+
+    - name: Install linter
+      shell: pwsh
+      run: |
+        dotnet tool install -g Community.PowerToys.Run.Plugin.Lint
+
+    - name: Set version in plugin.json
+      uses: tnikFi/json-file-transform@v1
+      with:
+        files: "src/plugin.json"
+        key-value-pairs: |
+          Version=${{ inputs.version }}
+
+    - name: Build the application for ${{ inputs.architecture }}
+      shell: pwsh
+      run: |
+        dotnet publish .\src\Community.PowerToys.Run.Plugin.CrcLauncher.csproj -c Release /p:PublishProfile=${{ inputs.architecture }}
+
+    - name: Clean and Zip the build output
+      id: zip-output
+      shell: pwsh
+      run: |
+        $zipPath = "./${{ env.ZipPrefix }}-${{ inputs.version }}-${{ inputs.architecture }}.zip"
+        Remove-Item -Recurse "./src/bin/${{ inputs.architecture }}/Release/${{ env.FrameworkVersion }}/${{ env.BuildFolderName }}/runtimes"
+        Remove-Item "./src/bin/${{ inputs.architecture }}/Release/${{ env.FrameworkVersion }}/${{ env.BuildFolderName }}/PowerToys.*"
+        Remove-Item "./src/bin/${{ inputs.architecture }}/Release/${{ env.FrameworkVersion }}/${{ env.BuildFolderName }}/Wox.*"
+        Remove-Item "./src/bin/${{ inputs.architecture }}/Release/${{ env.FrameworkVersion }}/${{ env.BuildFolderName }}/*.xml"
+        Remove-Item "./src/bin/${{ inputs.architecture }}/Release/${{ env.FrameworkVersion }}/${{ env.BuildFolderName }}/Microsoft.Windows.SDK.NET.dll"   
+        Compress-Archive -Path "./src/bin/${{ inputs.architecture }}/Release/${{ env.FrameworkVersion }}/${{ env.BuildFolderName }}" -DestinationPath "$zipPath"
+        echo "zipFile=$zipPath" >> $env:GITHUB_OUTPUT
+
+    - name: Lint
+      shell: pwsh
+      run: |
+        ptrun-lint "${{ steps.zip-output.outputs.zipFile }}"
