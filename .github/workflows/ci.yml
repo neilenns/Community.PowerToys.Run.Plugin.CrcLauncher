@@ -9,7 +9,7 @@ on:
       - main
 
 env:
-  ZipPrefix: "CRC launcher"
+  ZipPrefix: "Community.PowerToys.Run.Plugin.CrcLauncher"
   BuildFolderName: "CRC launcher"
   ProjectName: Community.PowerToys.Run.Plugin.CrcLauncher
   FrameworkVersion: net9.0-windows10.0.22621.0
