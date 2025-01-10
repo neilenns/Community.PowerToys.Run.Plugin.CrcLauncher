@@ -7,12 +7,9 @@ on:
   pull_request:
     branches:
       - main
-
 env:
-  ProjectName: Community.PowerToys.Run.Plugin.CrcLauncher
   ZipPrefix: CrcLauncher
-  BuildFolderName: CrcLauncher
-  FrameworkVersion: net8.0-windows10.0.22621.0
+  Version: "0.0.${{ github.event.number }}.${{ github.run_number }}"
 
 jobs:
   build:
@@ -23,34 +20,9 @@ jobs:
         architecture: [x64, arm64]
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
-
-      - name: Set up .NET
-        uses: actions/setup-dotnet@v2
+      - name: Build, zip, and lint
+        uses: ./build-zip-lint.yml
         with:
-          dotnet-version: "9.0.x"
-
-      - name: Install linter
-        run: |
-          dotnet tool install -g Community.PowerToys.Run.Plugin.Lint
-
-      - name: Build the application for ${{ matrix.architecture }}
-        run: |
-          dotnet publish .\src\${{ env.ProjectName }}.csproj -c Release /p:PublishProfile=${{ matrix.architecture }}
-
-      # Get rid of the PowerToys support DLLs. They are only there for development purposes
-      # and shouldn't be included in the final archive. Then zip the remaining files for the release.
-      - name: Zip the build output
-        run: |
-          Remove-Item -Recurse ./src/bin/${{ matrix.architecture }}/Release/${{ env.FrameworkVersion }}/${{ env.BuildFolderName }}/runtimes
-          Remove-Item ./src/bin/${{ matrix.architecture }}/Release/${{ env.FrameworkVersion }}/${{ env.BuildFolderName }}/PowerToys.*
-          Remove-Item ./src/bin/${{ matrix.architecture }}/Release/${{ env.FrameworkVersion }}/${{ env.BuildFolderName }}/Wox.*
-          Remove-Item ./src/bin/${{ matrix.architecture }}/Release/${{ env.FrameworkVersion }}/${{ env.BuildFolderName }}/*.xml
-          Remove-Item ./src/bin/${{ matrix.architecture }}/Release/${{ env.FrameworkVersion }}/${{ env.BuildFolderName }}/Microsoft.Windows.SDK.NET.dll
-          Compress-Archive -Path ./src/bin/${{ matrix.architecture }}/Release/${{ env.FrameworkVersion }}/${{ env.BuildFolderName }} -DestinationPath ./${{ env.ZipPrefix}}-1.0.0-${{ matrix.architecture }}.zip
-
-      - name: Lint
-        run: |
-          # ptrun-lint ${{ secrets.GITHUB_TOKEN }}
-          ptrun-lint ./${{ env.ZipPrefix}}-1.0.0-${{ matrix.architecture }}.zip
+          version: ${{ env.Version }}
+          architecture: ${{ matrix.architecture }}
+          zipPrefix: ${{ env.ZipPrefix }}

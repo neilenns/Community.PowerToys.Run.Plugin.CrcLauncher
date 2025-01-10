@@ -1,0 +1,51 @@
+name: Build and Zip Application
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        type: string
+      architecture:
+        required: true
+        type: string
+      zipPrefix:
+        required: true
+        type: string
+
+env:
+  ProjectName: Community.PowerToys.Run.Plugin.CrcLauncher
+  BuildFolderName: CrcLauncher
+  FrameworkVersion: net8.0-windows10.0.22621.0
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: "9.0.x"
+
+      - name: Set version in plugin.json
+        uses: tnikFi/json-file-transform@v1
+        with:
+          files: "src/plugin.json"
+          key-value-pairs: |
+            Version=${{ inputs.version }}
+
+      - name: Build the application for ${{ inputs.architecture }}
+        run: |
+          dotnet publish .\src\${{ env.ProjectName }}.csproj -c Release /p:PublishProfile=${{ inputs.architecture }}
+
+      - name: Clean and Zip the build output
+        run: |
+          Remove-Item -Recurse ./src/bin/${{ inputs.architecture }}/Release/${{ env.FrameworkVersion }}/${{ env.BuildFolderName }}/runtimes
+          Remove-Item ./src/bin/${{ inputs.architecture }}/Release/${{ env.FrameworkVersion }}/${{ env.BuildFolderName }}/PowerToys.*
+          Remove-Item ./src/bin/${{ inputs.architecture }}/Release/${{ env.FrameworkVersion }}/${{ env.BuildFolderName }}/Wox.*
+          Remove-Item ./src/bin/${{ inputs.architecture }}/Release/${{ env.FrameworkVersion }}/${{ env.BuildFolderName }}/*.xml
+          Remove-Item ./src/bin/${{ inputs.architecture }}/Release/${{ env.FrameworkVersion }}/${{ env.BuildFolderName }}/Microsoft.Windows.SDK.NET.dll
+          Compress-Archive -Path ./src/bin/${{ inputs.architecture }}/Release/${{ env.FrameworkVersion }}/${{ env.BuildFolderName }} -DestinationPath ./${{ inputs.zipPrefix}}-${{ inputs.version }}-${{ inputs.architecture }}.zip
