@@ -35,7 +35,7 @@ runs:
     - name: Build the application for ${{ inputs.architecture }}
       shell: pwsh
       run: |
-        dotnet publish .\src\Community.PowerToys.Run.Plugin.CrcLauncher.csproj -c Release /p:PublishProfile=${{ inputs.architecture }}
+        dotnet publish .\src\${{ env.ProjectName }}.csproj -c Release /p:PublishProfile=${{ inputs.architecture }}
 
     - name: Clean and Zip the build output
       id: zip-output
