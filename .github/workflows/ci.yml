@@ -10,6 +10,8 @@ on:
 env:
   Version: "0.0.${{ github.event.number }}.${{ github.run_number }}"
 
+# This method of passing environment varaibles to a reusable workflow comes from
+# https://github.com/orgs/community/discussions/26671
 jobs:
   setup:
     runs-on: windows-latest
@@ -17,7 +19,7 @@ jobs:
       Version: ${{ env.Version }}
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
   build:
     needs: [setup]

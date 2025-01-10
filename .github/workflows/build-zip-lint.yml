@@ -58,7 +58,7 @@ jobs:
           Remove-Item ./src/bin/${{ inputs.architecture }}/Release/${{ env.FrameworkVersion }}/${{ env.BuildFolderName }}/*.xml
           Remove-Item ./src/bin/${{ inputs.architecture }}/Release/${{ env.FrameworkVersion }}/${{ env.BuildFolderName }}/Microsoft.Windows.SDK.NET.dll
           Compress-Archive -Path ./src/bin/${{ inputs.architecture }}/Release/${{ env.FrameworkVersion }}/${{ env.BuildFolderName }} -DestinationPath $zipPath
-          echo "zipFile=$zipPath" >> $GITHUB_OUTPUT
+          echo "zipFile=$zipPath" >> $env:GITHUB_OUTPUT
 
       - name: Lint
         run: |

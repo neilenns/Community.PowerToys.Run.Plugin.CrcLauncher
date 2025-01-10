@@ -4,6 +4,8 @@ on:
   release:
     types: [created]
 
+# This method of passing environment varaibles to a reusable workflow comes from
+# https://github.com/orgs/community/discussions/26671
 jobs:
   setup:
     runs-on: windows-latest
@@ -11,7 +13,8 @@ jobs:
       Version: ${{ steps.get_version.outputs.version-without-v }}
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+
       - name: Get the release version
         id: get_version
         uses: dhkatz/get-version-action@v3.0.0
@@ -25,9 +28,6 @@ jobs:
         architecture: [x64, arm64]
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-
       - name: Build, zip, and lint
         id: build-zip-lint
         uses: ./.github/workflows/build-zip-lint.yml
