@@ -5,10 +5,6 @@ on:
     branches:
       - main
 
-env:
-  Name: "" # Default value, replaced by the Extract env from files step.
-  TARGETFRAMEWORK: "" # Default value, replaced by the Extract env from files step.
-
 jobs:
   build:
     runs-on: windows-latest

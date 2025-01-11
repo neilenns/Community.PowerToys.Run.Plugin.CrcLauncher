@@ -4,12 +4,6 @@ on:
   release:
     types: [created]
 
-env:
-  ZipPrefix: "Community.PowerToys.Run.Plugin.CrcLauncher"
-  BuildFolderName: "CRC launcher"
-  ProjectName: Community.PowerToys.Run.Plugin.CrcLauncher
-  FrameworkVersion: net9.0-windows10.0.22621.0
-
 jobs:
   build:
     runs-on: windows-latest
