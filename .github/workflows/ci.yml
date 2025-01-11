@@ -7,8 +7,7 @@ on:
 
 env:
   Name: "" # Default value, replaced by the Extract env from JSON step.
-  ExecuteFileName: "" # Default value, Replaced by the Extract env from JSON step.
-  PROJECT_NAME: "" # Default value, replaced by a build step
+  PROJECTNAME: "" # Default value, replaced by the Remove .dll from environment variable step.
   FrameworkVersion: net9.0-windows10.0.22621.0
 
 jobs:
@@ -33,8 +32,8 @@ jobs:
       - name: Remove .dll from environment variable
         shell: pwsh
         run: |
-          $TrimmedValue = $env:ExecuteFileName -replace '\.dll$', ''
-          Write-Output "PROJECT_NAME=$TrimmedValue" | Out-File -Append -FilePath $env:GITHUB_ENV
+          $TrimmedValue = $env:EXECUTEFILENAME -replace '\.dll$', ''
+          Write-Output "PROJECTNAME=$TrimmedValue" | Out-File -Append -FilePath $env:GITHUB_ENV
 
       - name: Build, zip, and lint
         uses: ./.github/actions/build-zip-lint
@@ -42,4 +41,4 @@ jobs:
           version: "0.${{ github.event.number }}.${{ github.run_number }}"
           architecture: ${{ matrix.architecture }}
           buildFolderName: ${{ env.NAME }}
-          projectName: ${{ env.PROJECT_NAME }}
+          projectName: ${{ env.PROJECTNAME }}
