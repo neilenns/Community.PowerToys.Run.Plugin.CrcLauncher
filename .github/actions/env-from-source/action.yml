@@ -20,7 +20,7 @@ runs:
     - name: Extract and set environment variables from manifest
       shell: pwsh
       run: |
-        $jsonFilePath = '${{ inputs.json-file }}'
+        $jsonFilePath = '${{ inputs.manifest-file }}'
         $jsonPathsInput = '${{ inputs.manifest-paths }}'
 
         # Parse the JSON paths input into an array
