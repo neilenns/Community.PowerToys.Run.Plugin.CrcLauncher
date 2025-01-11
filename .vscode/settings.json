@@ -6,5 +6,5 @@
     "**/bin": true,
     "**/obj": true
   },
-  "cSpell.words": ["pwsh", "tnik"]
+  "cSpell.words": ["PROJECTNAME", "pwsh", "tnik"]
 }
