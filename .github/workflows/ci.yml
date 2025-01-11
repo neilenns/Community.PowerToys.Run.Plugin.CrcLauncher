@@ -7,7 +7,6 @@ on:
 
 env:
   Name: "" # Default value, replaced by the Extract env from files step.
-  PROJECTNAME: "" # Default value, replaced by the Remove .dll from environment variable step.
   TARGETFRAMEWORK: "" # Default value, replaced by the Extract env from files step.
 
 jobs:
@@ -29,7 +28,7 @@ jobs:
             Name
           project-file: ./src/${{ github.event.repository.name }}.csproj
           project-paths: |
-            /root/PropertyGroup/TargetFramework
+            /Project/PropertyGroup/TargetFramework
 
       - name: Build, zip, and lint
         uses: ./.github/actions/build-zip-lint
