@@ -5,5 +5,12 @@
     "**/*.user": true,
     "**/bin": true,
     "**/obj": true
-  }
+  },
+  "cSpell.words": [
+    "EXECUTEFILENAME",
+    "PROJECTNAME",
+    "pwsh",
+    "TARGETFRAMEWORK",
+    "tnik"
+  ]
 }
