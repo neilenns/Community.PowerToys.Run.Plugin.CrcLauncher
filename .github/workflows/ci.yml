@@ -20,21 +20,8 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Extract env from files
-        uses: ./.github/actions/env-from-source
-        with:
-          manifest-file: ./src/plugin.json
-          manifest-paths: |
-            Name
-          project-file: ./src/${{ github.event.repository.name }}.csproj
-          project-paths: |
-            /Project/PropertyGroup/TargetFramework
-
       - name: Build, zip, and lint
         uses: ./.github/actions/build-zip-lint
         with:
           version: "0.${{ github.event.number }}.${{ github.run_number }}"
           architecture: ${{ matrix.architecture }}
-          buildFolderName: ${{ env.NAME }}
-          projectName: ${{ github.event.repository.name }}
-          targetFramework: ${{ env.TARGETFRAMEWORK }}
