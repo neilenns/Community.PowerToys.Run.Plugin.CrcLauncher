@@ -6,9 +6,9 @@ on:
       - main
 
 env:
-  Name: "" # Default value, replaced by the Extract env from JSON step.
+  Name: "" # Default value, replaced by the Extract env from files step.
   PROJECTNAME: "" # Default value, replaced by the Remove .dll from environment variable step.
-  FrameworkVersion: net9.0-windows10.0.22621.0
+  TARGETFRAMEWORK: "" # Default value, replaced by the Extract env from files step.
 
 jobs:
   build:
@@ -21,13 +21,16 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Extract env from JSON
-        uses: ./.github/actions/env-from-json
+      - name: Extract env from files
+        uses: ./.github/actions/env-from-source
         with:
-          json-file: ./src/plugin.json
-          json-paths: |
+          manifest-file: ./src/plugin.json
+          manifest-paths: |
             Name
             ExecuteFileName
+          project-file: ./src/Community.PowerToys.Run.Plugin.CrcLauncher.csproj
+          project-paths: |
+            /root/PropertyGroup/TargetFramework
 
       - name: Remove .dll from environment variable
         shell: pwsh
@@ -42,3 +45,4 @@ jobs:
           architecture: ${{ matrix.architecture }}
           buildFolderName: ${{ env.NAME }}
           projectName: ${{ env.PROJECTNAME }}
+          targetFramework: ${{ env.TARGETFRAMEWORK }}

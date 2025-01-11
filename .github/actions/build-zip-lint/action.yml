@@ -13,6 +13,9 @@ inputs:
   projectName:
     description: "Name of the project"
     required: true
+  targetFramework:
+    description: "Target framework for the project"
+    required: true
 
 outputs:
   zipFile:
@@ -49,12 +52,12 @@ runs:
       shell: pwsh
       run: |
         $zipPath = "./${{ inputs.projectName }}-${{ inputs.version }}-${{ inputs.architecture }}.zip"
-        Remove-Item -Recurse "./src/bin/${{ inputs.architecture }}/Release/${{ env.FrameworkVersion }}/${{ inputs.buildFolderName }}/runtimes"
-        Remove-Item "./src/bin/${{ inputs.architecture }}/Release/${{ env.FrameworkVersion }}/${{ inputs.buildFolderName }}/PowerToys.*"
-        Remove-Item "./src/bin/${{ inputs.architecture }}/Release/${{ env.FrameworkVersion }}/${{ inputs.buildFolderName }}/Wox.*"
-        Remove-Item "./src/bin/${{ inputs.architecture }}/Release/${{ env.FrameworkVersion }}/${{ inputs.buildFolderName }}/*.xml"
-        Remove-Item "./src/bin/${{ inputs.architecture }}/Release/${{ env.FrameworkVersion }}/${{ inputs.buildFolderName }}/Microsoft.Windows.SDK.NET.dll"   
-        Compress-Archive -Path "./src/bin/${{ inputs.architecture }}/Release/${{ env.FrameworkVersion }}/${{ inputs.buildFolderName }}" -DestinationPath "$zipPath"
+        Remove-Item -Recurse "./src/bin/${{ inputs.architecture }}/Release/${{ inputs.targetFramework }}/${{ inputs.buildFolderName }}/runtimes"
+        Remove-Item "./src/bin/${{ inputs.architecture }}/Release/${{ inputs.targetFramework }}/${{ inputs.buildFolderName }}/PowerToys.*"
+        Remove-Item "./src/bin/${{ inputs.architecture }}/Release/${{ inputs.targetFramework }}/${{ inputs.buildFolderName }}/Wox.*"
+        Remove-Item "./src/bin/${{ inputs.architecture }}/Release/${{ inputs.targetFramework }}/${{ inputs.buildFolderName }}/*.xml"
+        Remove-Item "./src/bin/${{ inputs.architecture }}/Release/${{ inputs.targetFramework }}/${{ inputs.buildFolderName }}/Microsoft.Windows.SDK.NET.dll"   
+        Compress-Archive -Path "./src/bin/${{ inputs.architecture }}/Release/${{ inputs.targetFramework }}/${{ inputs.buildFolderName }}" -DestinationPath "$zipPath"
         echo "zipFile=$zipPath" >> $env:GITHUB_OUTPUT
 
     - name: Lint
