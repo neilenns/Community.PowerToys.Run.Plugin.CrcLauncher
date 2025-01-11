@@ -22,8 +22,16 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Extract env from JSON
+        uses: ./.github/actions/env-from-json
+        with:
+          json-file: ./src/plugin.json
+          json-paths: |
+            Name
+
       - name: Build, zip, and lint
         uses: ./.github/actions/build-zip-lint
         with:
           version: "0.${{ github.event.number }}.${{ github.run_number }}"
           architecture: ${{ matrix.architecture }}
+          buildFolderName: ${{ env.NAME }}
