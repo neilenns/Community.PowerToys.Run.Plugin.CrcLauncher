@@ -6,5 +6,5 @@
     "**/bin": true,
     "**/obj": true
   },
-  "cSpell.words": ["pwsh"]
+  "cSpell.words": ["pwsh", "tnik"]
 }

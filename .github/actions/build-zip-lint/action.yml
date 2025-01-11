@@ -10,6 +10,9 @@ inputs:
   buildFolderName:
     description: "Name of the folder the build output goes to"
     required: true
+  projectName:
+    description: "Name of the project"
+    required: true
 
 outputs:
   zipFile:
@@ -39,13 +42,13 @@ runs:
     - name: Build the application for ${{ inputs.architecture }}
       shell: pwsh
       run: |
-        dotnet publish .\src\${{ env.ProjectName }}.csproj -c Release /p:PublishProfile=${{ inputs.architecture }}
+        dotnet publish .\src\${{ inputs.projectName }}.csproj -c Release /p:PublishProfile=${{ inputs.architecture }}
 
     - name: Clean and Zip the build output
       id: zip-output
       shell: pwsh
       run: |
-        $zipPath = "./${{ env.ZipPrefix }}-${{ inputs.version }}-${{ inputs.architecture }}.zip"
+        $zipPath = "./${{ inputs.projectName }}-${{ inputs.version }}-${{ inputs.architecture }}.zip"
         Remove-Item -Recurse "./src/bin/${{ inputs.architecture }}/Release/${{ env.FrameworkVersion }}/${{ inputs.buildFolderName }}/runtimes"
         Remove-Item "./src/bin/${{ inputs.architecture }}/Release/${{ env.FrameworkVersion }}/${{ inputs.buildFolderName }}/PowerToys.*"
         Remove-Item "./src/bin/${{ inputs.architecture }}/Release/${{ env.FrameworkVersion }}/${{ inputs.buildFolderName }}/Wox.*"
