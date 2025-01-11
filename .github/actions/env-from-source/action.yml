@@ -12,7 +12,7 @@ inputs:
     required: true
   project-paths:
     description: Newline separated list of XML paths to extract from the manifest. The environment variable names will match the last part of each path.
-    true
+    required: true
 
 runs:
   using: "composite"

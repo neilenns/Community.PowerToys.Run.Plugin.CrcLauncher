@@ -27,16 +27,9 @@ jobs:
           manifest-file: ./src/plugin.json
           manifest-paths: |
             Name
-            ExecuteFileName
           project-file: ./src/Community.PowerToys.Run.Plugin.CrcLauncher.csproj
           project-paths: |
             /root/PropertyGroup/TargetFramework
-
-      - name: Remove .dll from environment variable
-        shell: pwsh
-        run: |
-          $TrimmedValue = $env:EXECUTEFILENAME -replace '\.dll$', ''
-          Write-Output "PROJECTNAME=$TrimmedValue" | Out-File -Append -FilePath $env:GITHUB_ENV
 
       - name: Build, zip, and lint
         uses: ./.github/actions/build-zip-lint
@@ -44,5 +37,5 @@ jobs:
           version: "0.${{ github.event.number }}.${{ github.run_number }}"
           architecture: ${{ matrix.architecture }}
           buildFolderName: ${{ env.NAME }}
-          projectName: ${{ env.PROJECTNAME }}
+          projectName: ${{ github.event.repository.name }}
           targetFramework: ${{ env.TARGETFRAMEWORK }}
